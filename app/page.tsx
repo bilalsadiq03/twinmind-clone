@@ -5,11 +5,19 @@ import TranscriptPanel from "@/components/TranscriptPanel";
 import SuggestionsPanel from "@/components/SuggestionsPanel";
 import ChatPanel from "@/components/ChatPanel";
 import { Message, Suggestion, TranscriptChunk } from "@/types";
+import useAudioRecorder from "@/hooks/useAudioRecorder";
 
 export default function Home() {
   const [transcript, setTranscript] = useState<TranscriptChunk[]>([]);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+
+  const {
+    isRecording,
+    startRecording,
+    stopRecording,
+    audioChunks,
+  } = useAudioRecorder();
 
   const handleSend = (text: string) => {
     const newMessage: Message = {
@@ -28,6 +36,23 @@ export default function Home() {
       {/* Header */}
       <div className="h-14 border-b bg-white flex items-center px-6 font-semibold shadow-sm">
         TwinMind AI Assistant
+
+        {/* 🎤 Mic Button */}
+        <button
+          onClick={isRecording ? stopRecording : startRecording}
+          className={`ml-auto px-4 py-1 rounded-lg text-sm ${
+            isRecording ? "bg-red-500 text-white" : "bg-black text-white"
+          }`}
+        >
+          {isRecording ? "Stop Mic" : "Start Mic"}
+        </button>
+
+        {/* Recording Indicator */}
+        {isRecording && (
+          <span className="text-red-500 text-sm ml-3">
+            ● Recording...
+          </span>
+        )}
       </div>
 
       {/* Layout */}
